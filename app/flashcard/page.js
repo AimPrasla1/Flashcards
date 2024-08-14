@@ -1,19 +1,20 @@
-// app/flashcard/page.js
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Container, Box, Typography, Grid, Card, CardContent } from '@mui/material';
 import { doc, getDoc, collection } from 'firebase/firestore';
 import { db } from '../firebase';
 
-export default function Flashcard() {
+function FlashcardContent() {
   const [flashcards, setFlashcards] = useState([]);
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
 
   useEffect(() => {
     const fetchFlashcards = async () => {
+      if (!id) return;
+
       const docRef = doc(collection(db, 'flashcardSets'), id);
       const docSnap = await getDoc(docRef);
 
@@ -47,5 +48,13 @@ export default function Flashcard() {
         </Grid>
       </Box>
     </Container>
+  );
+}
+
+export default function Flashcard() {
+  return (
+    <Suspense fallback={<div>Loading flashcards...</div>}>
+      <FlashcardContent />
+    </Suspense>
   );
 }
