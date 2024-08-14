@@ -6,23 +6,22 @@ import Link from 'next/link';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
 
 export default function Home() {
-  const { user } = useUser(); // Use the hook at the top level of the component
+  const { user } = useUser(); 
   const [plan, setPlan] = useState('');
 
   useEffect(() => {
     if (user) {
-      const userPlan = user.publicMetadata?.plan || 'Free Plan'; // Retrieve the plan from user metadata
+      const userPlan = user.publicMetadata?.plan || 'Free Plan'; 
       setPlan(userPlan);
     }
   }, [user]);
 
   async function handleCheckout() {
     if (!user) {
-      // Redirect to sign-in page with a query parameter for redirection after sign-in
       window.location.href = `/sign-in?redirect_to=checkout`;
       return;
     }
-
+  
     try {
       const response = await fetch('/api/checkout_sessions', {
         method: 'POST',
@@ -30,22 +29,21 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          priceId: 'price_1PnRP1IOhsX2NmFQfzyhTu8C', // Replace with your actual price ID from Stripe
-          userId: user.id, // Pass the userId to Stripe
+          priceId: 'price_1PnlaNIOhsX2NmFQDgI9AkdX',
+          userId: user.id,
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to create checkout session');
       }
-
+  
       const { url } = await response.json();
-
+  
       if (!url) {
         throw new Error('No URL returned from API');
       }
-
-      // Redirect to Stripe Checkout
+  
       window.location.href = url;
     } catch (error) {
       console.error('Error during checkout:', error);
@@ -55,11 +53,9 @@ export default function Home() {
 
   function handleGetStarted() {
     if (!user) {
-      // Redirect to sign-in page if the user is not signed in
-      window.location.href = '/sign-in?redirect_to=generate';
+      window.location.href = '/sign-in';
     } else {
-      // Redirect to the generate page
-      window.location.href = '/generate';
+      window.location.href = '/generate'; // Adjust this path according to where the user should go
     }
   }
 
@@ -119,7 +115,7 @@ export default function Home() {
                 variant="contained"
                 color="primary"
                 sx={{ mt: 2 }}
-                onClick={handleCheckout} // Link to the handleCheckout function
+                onClick={handleCheckout}
               >
                 Go Pro
               </Button>
@@ -201,7 +197,7 @@ export default function Home() {
                   variant="contained"
                   color="primary"
                   sx={{ mt: 2 }}
-                  onClick={handleCheckout} // Link to the handleCheckout function
+                  onClick={handleCheckout}
                 >
                   Go Pro
                 </Button>
