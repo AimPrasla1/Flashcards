@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Container, Box, Typography, Grid, Card, CardContent } from '@mui/material';
 import { doc, getDoc, collection } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { db } from '../firebase';
 
 export default function Flashcard() {
   const [flashcards, setFlashcards] = useState([]);
