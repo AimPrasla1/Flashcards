@@ -1,27 +1,34 @@
+// app/page.js
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Box, Typography, Button, Container, Grid, AppBar, Toolbar } from '@mui/material';
 import Link from 'next/link';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
 
 export default function Home() {
-  const { user } = useUser(); 
+  const { user } = useUser();
   const [plan, setPlan] = useState('');
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
   useEffect(() => {
-    if (user) {
-      const userPlan = user.publicMetadata?.plan || 'Free Plan'; 
+    const planFromQuery = searchParams.get('plan');
+    if (planFromQuery) {
+      setPlan(planFromQuery);
+    } else if (user) {
+      const userPlan = user.publicMetadata?.plan || 'Free Plan';
       setPlan(userPlan);
     }
-  }, [user]);
+  }, [user, searchParams]);
 
   async function handleCheckout() {
     if (!user) {
       window.location.href = `/sign-in?redirect_to=checkout`;
       return;
     }
-  
+
     try {
       const response = await fetch('/api/checkout_sessions', {
         method: 'POST',
@@ -29,21 +36,21 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          priceId: 'price_1PnlaNIOhsX2NmFQDgI9AkdX',
-          userId: user.id,
+          priceId: 'price_1PnlaNIOhsX2NmFQDgI9AkdX', // Replace with your actual price ID from Stripe
+          userId: user.id, // Pass the userId along with the request
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error('Failed to create checkout session');
       }
-  
+
       const { url } = await response.json();
-  
+
       if (!url) {
         throw new Error('No URL returned from API');
       }
-  
+
       window.location.href = url;
     } catch (error) {
       console.error('Error during checkout:', error);
@@ -61,28 +68,10 @@ export default function Home() {
 
   return (
     <>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Flashcard SaaS
-          </Typography>
-          <SignedOut>
-            <Button color="inherit" href="/sign-in" component={Link}>
-              Login
-            </Button>
-            <Button color="inherit" href="/sign-up" component={Link}>
-              Sign Up
-            </Button>
-          </SignedOut>
-          <SignedIn>
-            <UserButton />
-          </SignedIn>
-        </Toolbar>
-      </AppBar>
-
+      
       <Container maxWidth="lg" sx={{ textAlign: 'center', my: 4 }}>
         <Typography variant="h2" component="h1" gutterBottom>
-          Welcome to Flashcard SaaS
+          Welcome to StudyBuddy AI
         </Typography>
         <Typography variant="h5" component="h2" gutterBottom>
           The easiest way to create and manage flashcards for effective learning.
@@ -184,26 +173,28 @@ export default function Home() {
             </Grid>
           </SignedOut>
 
-          <Grid item xs={12} sm={6} md={4}>
-            <Box sx={{ p: 4, border: '1px solid', borderRadius: '8px', borderColor: 'grey.300' }}>
-              <Typography variant="h5" component="h3" gutterBottom>
-                Pro Plan
-              </Typography>
-              <Typography>
-                Unlock all features with unlimited flashcard sets, AI-powered generation, and more.
-              </Typography>
-              {plan !== 'Pro Plan' && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  sx={{ mt: 2 }}
-                  onClick={handleCheckout}
-                >
-                  Go Pro
-                </Button>
-              )}
-            </Box>
-          </Grid>
+          <SignedIn>
+            <Grid item xs={12} sm={6} md={4}>
+              <Box sx={{ p: 4, border: '1px solid', borderRadius: '8px', borderColor: 'grey.300' }}>
+                <Typography variant="h5" component="h3" gutterBottom>
+                  Pro Plan
+                </Typography>
+                <Typography>
+                  Unlock all features with unlimited flashcard sets, AI-powered generation, and more.
+                </Typography>
+                {plan !== 'Pro Plan' && (
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ mt: 2 }}
+                    onClick={handleCheckout}
+                  >
+                    Go Pro
+                  </Button>
+                )}
+              </Box>
+            </Grid>
+          </SignedIn>
         </Grid>
       </Container>
     </>

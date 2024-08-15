@@ -31,13 +31,18 @@ export default async function handler(req, res) {
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object;
 
-      try {
-        const userId = session.metadata.userId;
+      if (!session.metadata || !session.metadata.userId) {
+        console.error('Missing userId in session metadata.');
+        return res.status(400).send('Webhook Error: Missing userId in session metadata.');
+      }
 
+      const userId = session.metadata.userId;
+
+      try {
         // Update the user's plan in Clerk
         await clerkClient.users.updateUser(userId, {
           publicMetadata: {
-            plan: 'Pro Plan',
+            plan: 'Pro Plan', // Update this value based on your needs
           },
         });
 

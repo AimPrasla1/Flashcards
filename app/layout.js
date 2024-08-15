@@ -3,6 +3,7 @@
 import { ClerkProvider } from '@clerk/nextjs';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
+import Header from '../app/components/header';
 
 const theme = createTheme({
   palette: {
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
         <ClerkProvider>
           <ThemeProvider theme={theme}>
             <CssBaseline />
+            <Header /> 
             {children}
           </ThemeProvider>
         </ClerkProvider>

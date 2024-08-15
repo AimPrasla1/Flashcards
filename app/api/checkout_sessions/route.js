@@ -1,9 +1,22 @@
-import { NextResponse } from 'next/server';
+// app/api/checkout_sessions/route.js
 import Stripe from 'stripe';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2022-11-15',
 });
+
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  const sessionId = searchParams.get('session_id');
+
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    return new Response(JSON.stringify(session), { status: 200 });
+  } catch (error) {
+    console.error('Error retrieving session:', error);
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+  }
+}
 
 export async function POST(req) {
   try {
@@ -25,9 +38,9 @@ export async function POST(req) {
       cancel_url: `${process.env.NEXT_PUBLIC_DOMAIN}/cancel`,
     });
 
-    return NextResponse.json({ url: session.url });
+    return new Response(JSON.stringify({ url: session.url }), { status: 200 });
   } catch (err) {
     console.error('Error creating Stripe session:', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return new Response(JSON.stringify({ error: err.message }), { status: 500 });
   }
 }
