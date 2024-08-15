@@ -1,13 +1,12 @@
-// app/page.js
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Box, Typography, Button, Container, Grid, AppBar, Toolbar } from '@mui/material';
 import Link from 'next/link';
 import { SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
 
-export default function Home() {
+function HomePageContent() {
   const { user } = useUser();
   const [plan, setPlan] = useState('');
   const searchParams = useSearchParams();
@@ -68,7 +67,6 @@ export default function Home() {
 
   return (
     <>
-      
       <Container maxWidth="lg" sx={{ textAlign: 'center', my: 4 }}>
         <Typography variant="h2" component="h1" gutterBottom>
           Welcome to StudyBuddy AI
@@ -198,5 +196,13 @@ export default function Home() {
         </Grid>
       </Container>
     </>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <HomePageContent />
+    </Suspense>
   );
 }
