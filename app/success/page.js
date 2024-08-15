@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Container, Typography, CircularProgress, Button, Box } from '@mui/material';
 import { useUser } from '@clerk/nextjs';
 
-export default function SuccessPageContent() {
+function SuccessPageContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const { user } = useUser();
@@ -94,5 +94,13 @@ export default function SuccessPageContent() {
         </Button>
       </Box>
     </Container>
+  );
+}
+
+export default function SuccessPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SuccessPageContent />
+    </Suspense>
   );
 }
