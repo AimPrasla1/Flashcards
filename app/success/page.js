@@ -1,3 +1,4 @@
+// app/success/page.js
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -16,10 +17,12 @@ export default function SuccessPage() {
   useEffect(() => {
     const updateUserPlan = async () => {
       try {
+        // Fetch the session details from Stripe
         const res = await fetch(`/api/checkout_sessions?session_id=${sessionId}`);
         const session = await res.json();
 
         if (res.ok && session.payment_status === 'paid') {
+          // Update the user's plan in Clerk
           const updateRes = await fetch('/api/update-user-plan', {
             method: 'POST',
             headers: {
@@ -54,11 +57,6 @@ export default function SuccessPage() {
     }
   }, [sessionId, user]);
 
-  const handleReturnHome = () => {
-    const queryString = `/?plan=Pro%20Plan`;
-    router.push(queryString);
-  };
-
   if (loading) {
     return (
       <Container maxWidth="sm" sx={{ textAlign: 'center', mt: 4 }}>
@@ -91,7 +89,7 @@ export default function SuccessPage() {
           variant="contained"
           color="primary"
           sx={{ mt: 4 }}
-          onClick={handleReturnHome}
+          onClick={() => router.push('/')}
         >
           Return to Homepage
         </Button>
