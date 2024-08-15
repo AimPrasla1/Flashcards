@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { Container, Typography, CircularProgress, Button, Box } from '@mui/material';
 import { useUser } from '@clerk/nextjs';
 
-export default function SuccessPage() {
+export default function SuccessPageContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const { user } = useUser();
@@ -34,7 +34,7 @@ export default function SuccessPage() {
             throw new Error('Failed to update user plan.');
           }
 
-          const updateData = await updateRes.json();
+          const updateData = await updateRes.json(); // Ensure this is valid JSON
           if (updateData.error) {
             throw new Error(updateData.error);
           }
