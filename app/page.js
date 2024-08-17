@@ -27,6 +27,12 @@ function HomePageContent() {
   }, [user, searchParams]);
 
   useEffect(() => {
+    if (plan === 'Pro Plan') {
+      router.refresh();
+    }
+  }, [plan, router]);
+
+  useEffect(() => {
     const featureObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry, index) => {
@@ -145,7 +151,7 @@ function HomePageContent() {
             sx={{
               mr: 2,
               bgcolor: 'white',
-              color: 'black',
+              color: '#024950',
               '&:hover': {
                 bgcolor: '#AFDDE5',
               },
@@ -154,7 +160,22 @@ function HomePageContent() {
           >
             Get Started
           </Button>
-
+          
+          {plan !== 'Pro Plan' && (
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: 'white',
+                color: '#024950',
+                '&:hover': {
+                  bgcolor: '#afdde5',
+                },
+              }}
+              onClick={handleCheckout}
+            >
+              Go Pro
+            </Button>
+          )}
           </Box>
           <SignedIn>
             <Container maxWidth="lg" sx={{ textAlign: 'center', my: 4 }}>
@@ -417,7 +438,7 @@ function HomePageContent() {
             bgcolor: 'white',
             color: '#0FA4AF',
             '&:hover': {
-              bgcolor: '#AFDDE5', // Background color on hover
+              bgcolor: '#AFDDE5', 
             },
           }}
           href="/generate"
