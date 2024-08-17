@@ -42,7 +42,6 @@ export default function Generate() {
 
       const data = await response.json();
 
-      // Ensure only 12 flashcards are generated
       if (data.length >= 6) {
         const newFlashcards = data.slice(0, 6);
         setFlashcards(newFlashcards);
@@ -84,82 +83,126 @@ export default function Generate() {
   };
 
   return (
-    <Container maxWidth="md">
-      <Box sx={{ my: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom textAlign="center">
-          Generate Flashcards
-        </Typography>
-        <TextField
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          label="Enter text"
-          fullWidth
-          multiline
-          rows={4}
-          variant="outlined"
-          sx={{ mb: 2 }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleSubmit}
-          fullWidth
-        >
-          Generate Flashcards
-        </Button>
-      </Box>
-
-      {flashcards.length > 0 && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h5" component="h2" gutterBottom textAlign="center">
-            Generated Flashcards
+    <Box
+      sx={{
+        bgcolor: '#AFDDE5', // Your desired background color
+        minHeight: '100vh',  // Ensure it covers the full viewport height
+        width: '100%',       // Ensure it covers the full viewport width
+        padding: 0,          // Remove any padding
+        margin: 0,           // Remove any margin
+      }}
+    >
+      <Container maxWidth="md" sx={{ bgcolor: '#AFDDE5', minHeight: '100vh', color: 'white', py: 4 }}>
+        <Box sx={{ my: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom textAlign="center">
+            Generate Flashcards
           </Typography>
-          <Grid container spacing={2}>
-            {flashcards.map((flashcard, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card sx={{ width: '100%', height: 200 }}>
-                  <CardActionArea
-                    onClick={() => handleFlip(index)}
-                    sx={{ height: '100%' }}
-                  >
-                    <CardContent
-                      sx={{
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        textAlign: 'center',
-                      }}
-                    >
-                      {flipped[index] ? (
-                        <>
-                          <Typography variant="h6">Answer</Typography>
-                          <Typography>{flashcard.back}</Typography>
-                        </>
-                      ) : (
-                        <>
-                          <Typography variant="h6">Question</Typography>
-                          <Typography>{flashcard.front}</Typography>
-                        </>
-                      )}
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-            ))}
-          </Grid>
+          <TextField
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            label="Enter text"
+            fullWidth
+            multiline
+            rows={4}
+            variant="outlined"
+            sx={{
+              mb: 2,
+              bgcolor: 'white',
+              borderRadius: 1,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#0FA4AF', // Border color of the input box
+                },
+                '&:hover fieldset': {
+                  borderColor: '#0FA4AF', // Border color on hover
+                },
+                '&.Mui-focused fieldset': {
+                  borderColor: '#0FA4AF', // Border color when focused
+                },
+              },
+            }}
+            InputProps={{
+              style: { color: 'black' }, // Text inside the input box
+            }}
+            InputLabelProps={{
+              style: { color: 'black' }, // Label (placeholder) color, stays black when focused
+            }}
+          />
           <Button
             variant="contained"
-            color="secondary"
-            onClick={handleSave}
-            fullWidth
-            sx={{ mt: 2 }}
+            sx={{
+              bgcolor: '#0FA4AF',   // Button background color
+              color: 'white',
+              '&:hover': {
+                bgcolor: '#024950', // Background color on hover
+              },
+              fullWidth: true,
+            }}
+            onClick={handleSubmit}
           >
-            Save Flashcards
+            Generate Flashcards
           </Button>
         </Box>
-      )}
-    </Container>
+
+        {flashcards.length > 0 && (
+          <Box sx={{ mt: 4 }}>
+            <Typography variant="h5" component="h2" gutterBottom textAlign="center">
+              Generated Flashcards
+            </Typography>
+            <Grid container spacing={2}>
+              {flashcards.map((flashcard, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card sx={{ width: '100%', height: 200, bgcolor: '#0FA4AF' }}> {/* Flashcard background color */}
+                    <CardActionArea
+                      onClick={() => handleFlip(index)}
+                      sx={{ height: '100%' }}
+                    >
+                      <CardContent
+                        sx={{
+                          height: '100%',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          textAlign: 'center',
+                          color: 'white', // Flashcard text color
+                        }}
+                      >
+                        {flipped[index] ? (
+                          <>
+                            <Typography variant="h6">Answer</Typography>
+                            <Typography>{flashcard.back}</Typography>
+                          </>
+                        ) : (
+                          <>
+                            <Typography variant="h6">Question</Typography>
+                            <Typography>{flashcard.front}</Typography>
+                          </>
+                        )}
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+            <Button
+              variant="contained"
+              sx={{
+                mt: 2,
+                bgcolor: '#0FA4AF',   // Button background color
+                color: 'white',
+                '&:hover': {
+                  bgcolor: '#024950', // Background color on hover
+                },
+                fullWidth: true,
+              }}
+              onClick={handleSave}
+            >
+              Save Flashcards
+            </Button>
+          </Box>
+        )}
+      </Container>
+    </Box>
   );
 }

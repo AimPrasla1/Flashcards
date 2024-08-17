@@ -1,12 +1,12 @@
 'use client';
 
-import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Box } from '@mui/material';
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
 
 export default function Header() {
   return (
-    <AppBar position="static">
+    <AppBar position="static" sx={{ bgcolor: '#024950' }}>
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
           StudyBuddy AI
@@ -20,7 +20,23 @@ export default function Header() {
           </Button>
         </SignedOut>
         <SignedIn>
-          <UserButton />
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Button
+              sx={{
+                color: 'white',
+                bgcolor: 'transparent',
+                '&:hover': {
+                  bgcolor: '#AFDDE5',
+                },
+                marginRight: 2,
+              }}
+              href="/"
+              component={Link}
+            >
+              Home
+            </Button>
+            <UserButton />
+          </Box>
         </SignedIn>
       </Toolbar>
     </AppBar>
